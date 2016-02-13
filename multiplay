@@ -1,0 +1,285 @@
+function createCSS(){
+	var head = document.head || document.getElementsByTagName('head')[0];
+	var warna = document.createElement('style');
+		warna.innerHTML='#kanan,#kiri,#waktuMulai{text-align:center}#popBet{background:#f3f3f3;border:1px solid;border-radius:10px;position:relative;padding:13px;margin:5px}#xclosed{position:absolute;border-radius:50%;font-size:20px;color:#fff;box-shadow:2px 2px 2px #666;cursor:pointer;background:linear-gradient(to bottom,#ffa84c 0,#ff7b0d 100%);border:1px solid #fff;font-weight:700;padding:9px;top:-20px;right:-15px}#kiri{color:#006400;border:1px solid;margin:0}.h5atas{color:green;border-bottom:1px solid;background:#ccc;padding-bottom:5px;margin-top:0}.ptab{color:green;font-size:12px;-webkit-transition:all 1s ease;-moz-transition:all 1s ease;-o-transition:all 1s ease;-ms-transition:all 1s ease}#mulai{margin:10px;width:90px}#berhenti{width:90px;color:#fb0526;text-shadow:1px 1px 1px #fff}#waktuMulai{border-radius:50%;font-weight:700;border:5px solid;background:red;text-shadow:5px 5px 3px #000;display:block;margin:0 auto;width:100px;height:100px;font-size:50px;padding-top:18px;box-shadow:0 0 10px #000 inset}';
+	head.appendChild(warna);
+};
+function runBitco(){
+var newDiv1 = document.createElement("div");
+newDiv1.setAttribute("id", "popBet");
+newDiv1.innerHTML = '<span id="xclosed">close</span>'+
+'<div id="kiri">'+
+'<h5 class="h5atas">LAPORAN PROFIT </h5>'+
+'<h5 style="color:#ccc">MODAL : <span id="saldo_awal"></span></h5>'+
+'<h5 style="color:#000">BALANCE : <span id="saldo_akhir"></span></h5>'+
+'<hr/>'+
+'<h5 style="color:green">BET ON : <span id="min_bet"></span></h5>'+
+'<h5 style="color:blue">RESULT : <span id="profit">0.00000000</span></h5>'+
+'<p class="ptab">TABUNGAN : <span id="tabungan">0.00000000</span></p>'+
+'</div><div id="kanan">'+
+'<button id="mulai" class="button medium success">START</button>'+
+'<button id="berhenti" class="button medium success">STOP</button>'+
+'<br/>'+
+'<button id="hapus">RESET DATA</button>'+
+'</div>';
+document.getElementById('double_your_btc_right_section').firstChild.style.display="none";
+document.getElementById("double_your_btc_right_section").appendChild(newDiv1);
+document.getElementById('double_your_btc_right_section').scrollIntoView();
+
+/*EventListener*/
+function eventAdd(e, eventName, handler) {
+	if (e.addEventListener) e.addEventListener(eventName, handler, false);
+	else e.attachEvent('on' + eventName, handler);
+};
+
+/* Close  */
+eventAdd(document.getElementById('xclosed'), 'click', function() { 
+document.getElementById('double_your_btc_right_section').firstChild.style.display="block";
+document.getElementById('xclosed').parentNode.remove();
+});
+
+/* Hapus */
+function hapus(){
+document.getElementById("profit").style.color="blue";
+document.getElementById("tabungan").textContent ="0.00000000";
+document.getElementById("profit").textContent ="0.00000000";
+document.getElementById('saldo_awal').textContent = document.getElementById('balance').textContent;
+document.getElementById('saldo_akhir').textContent = document.getElementById('balance').textContent;
+document.getElementById('double_your_btc_min').click();
+document.getElementById('min_bet').textContent=document.getElementById('double_your_btc_stake').value;
+};
+hapus();
+eventAdd(document.getElementById('hapus'), 'click', function() {
+	hapus();
+});
+
+/* Warna Profit */
+function warna(){
+	var wtab = Number(document.getElementById("profit").innerHTML);
+	if (wtab<0){document.getElementById("profit").style.color="red";}
+	else document.getElementById("profit").style.color="green";
+};
+
+/* Acak */
+function acak(){
+	document.getElementById('tabungan').style["font-size"] = "12px";
+	var pilih = Math.floor((Math.random() * 2) + 1);
+	if (pilih===1){document.getElementById("double_your_btc_bet_hi_button").click();}
+	else {document.getElementById("double_your_btc_bet_lo_button").click();}
+};
+
+/* Bet */
+var betTerus;
+eventAdd(document.getElementById('mulai'), 'click', function() {
+	/*Time Counter*/
+	var countDiv = document.createElement("div");
+	countDiv.setAttribute("id", "waktuMulai");
+	countDiv.setAttribute("style", "display:none;");
+	document.getElementById("double_your_btc_middle_section").appendChild(countDiv);
+	function hitungMulai(){
+		var count =4;
+		var hitungMundur = setInterval(function waktu(){
+			if (count<=0){
+				clearInterval(hitungMundur)
+				document.getElementById('waktuMulai').style.display="none";
+			}
+			else{
+				count--
+				document.getElementById('waktuMulai').style.display="block";
+				document.getElementById("waktuMulai").textContent = count;
+			}
+		}, 1000);
+
+	};
+	hapus();
+	var balance = document.getElementById('balance').innerHTML;
+	var tabungan = document.getElementById('tabungan').innerHTML;
+	if(Number(balance)<=Number(tabungan)){clearInterval(betTerus)}	
+	betTerus = setInterval(	function gambler(){
+		acak(); warna();
+		setTimeout(function(){
+			var saldo_awal = document.getElementById('saldo_awal').innerHTML;
+			var balance = document.getElementById('balance').innerHTML;
+			var tabungan = document.getElementById('tabungan').innerHTML;
+			var idmin_bet = document.getElementById('min_bet');
+			var prop = Number(Number(balance)-Number(saldo_awal)).toFixed(8);
+			var simpanan = Number(Number(prop)+Number(tabungan)).toFixed(8);
+			document.getElementById("profit").textContent = prop;
+			document.getElementById('saldo_akhir').textContent = balance;
+			if(prop>=0.00000002){
+				document.getElementById('tabungan').textContent = simpanan;
+				document.getElementById('tabungan').style["font-size"] = "24px";
+				document.getElementById('saldo_awal').textContent = balance;
+				document.getElementById('saldo_akhir').textContent = balance;
+				document.getElementById('double_your_btc_min').click();
+				idmin_bet.textContent=document.getElementById('double_your_btc_stake').value;
+				idmin_bet.style.color="green";
+			}
+			else if(prop<0){
+				document.getElementById("profit").style.color="red";
+				document.getElementById('double_your_btc_2x').click();
+				idmin_bet.textContent=document.getElementById('double_your_btc_stake').value;
+				idmin_bet.style.color="red";
+			}
+			else {
+				document.getElementById("profit").style.color="green";
+				document.getElementById('double_your_btc_min').click();
+				idmin_bet.textContent=document.getElementById('double_your_btc_stake').value;
+				idmin_bet.style.color="green";
+			}
+		}, 1000);
+	}, 3000);
+});
+
+/*Stop Bet*/
+eventAdd(document.getElementById('berhenti'), 'click', function() {
+	clearInterval(betTerus);
+});
+};
+function runDoge(){
+var newDiv1 = document.createElement("div");
+newDiv1.setAttribute("id", "popBet");
+newDiv1.innerHTML = '<span id="xclosed">close</span>'+
+'<div id="kiri">'+
+'<h5 class="h5atas">LAPORAN PROFIT </h5>'+
+'<h5 style="color:#ccc">MODAL : <span id="saldo_awal"></span></h5>'+
+'<h5 style="color:#000">BALANCE : <span id="saldo_akhir"></span></h5>'+
+'<hr/>'+
+'<h5 style="color:green">BET ON : <span id="min_bet"></span></h5>'+
+'<h5 style="color:blue">RESULT : <span id="profit">0.00000000</span></h5>'+
+'<p class="ptab">TABUNGAN : <span id="tabungan">0.00000000</span></p>'+
+'</div><div id="kanan">'+
+'<button id="mulai" class="button medium success">START</button>'+
+'<button id="berhenti" class="button medium success">STOP</button>'+
+'<br/>'+
+'<button id="hapus">RESET DATA</button>'+
+'</div>';
+document.getElementById('double_your_doge_right_section').firstChild.style.display="none";
+document.getElementById("double_your_doge_right_section").appendChild(newDiv1);
+document.getElementById('double_your_doge_right_section').scrollIntoView();
+
+//EventListener
+function eventAdd(e, eventName, handler) {
+	if (e.addEventListener) e.addEventListener(eventName, handler, false);
+	else e.attachEvent('on' + eventName, handler);
+};
+
+/* Close  */
+eventAdd(document.getElementById('xclosed'), 'click', function() { 
+document.getElementById('double_your_doge_right_section').firstChild.style.display="block";
+document.getElementById('xclosed').parentNode.remove();
+});
+
+/* Hapus */
+function hapus(){
+document.getElementById("profit").style.color="blue";
+document.getElementById("tabungan").textContent ="0.00000000";
+document.getElementById("profit").textContent ="0.00000000";
+document.getElementById('saldo_awal').textContent = document.getElementById('balance').textContent;
+document.getElementById('saldo_akhir').textContent = document.getElementById('balance').textContent;
+document.getElementById('double_your_doge_min').click();
+document.getElementById('min_bet').textContent=document.getElementById('double_your_doge_stake').value;
+};
+eventAdd(document.getElementById('hapus'), 'click', function() {
+	hapus();
+});
+
+/* Warna Profit */
+function warna(){
+	var wtab = Number(document.getElementById("profit").innerHTML);
+	if (wtab<0){document.getElementById("profit").style.color="red";}
+	else document.getElementById("profit").style.color="green";
+};
+
+/* Acak */
+function acak(){
+	document.getElementById('tabungan').style["font-size"] = "12px";
+	var pilih = Math.floor((Math.random() * 2) + 1);
+	if (pilih===1){document.getElementById("double_your_doge_bet_hi_button").click();}
+	else {document.getElementById("double_your_doge_bet_lo_button").click();}
+};
+
+/* Bet */
+var betTerus;
+eventAdd(document.getElementById('mulai'), 'click', function() {
+	//Time Counter
+	var countDiv = document.createElement("div");
+	countDiv.setAttribute("id", "waktuMulai");
+	countDiv.setAttribute("style", "display:none;");
+	document.getElementById("double_your_doge_middle_section").appendChild(countDiv);
+	function hitungMulai(){
+		var count =4;
+		var hitungMundur = setInterval(function waktu(){	
+			if (count<=0){
+				clearInterval(hitungMundur)
+				document.getElementById('waktuMulai').style.display="none";
+			}
+			else{
+				count--
+				document.getElementById('waktuMulai').style.display="block";
+				document.getElementById("waktuMulai").textContent = count;
+			}
+		}, 1000);
+	};
+	hapus();
+	var balance = document.getElementById('balance').innerHTML;
+	var tabungan = document.getElementById('tabungan').innerHTML;
+	if(Number(balance)<=Number(tabungan)){clearInterval(betTerus)}
+	betTerus = setInterval(function gambler(){
+		acak(); warna();
+		setTimeout(function(){
+			var saldo_awal = document.getElementById('saldo_awal').innerHTML;
+			var balance = document.getElementById('balance').innerHTML;
+			var tabungan = document.getElementById('tabungan').innerHTML;
+			var idmin_bet = document.getElementById('min_bet');
+			var prop = Number(Number(balance)-Number(saldo_awal)).toFixed(8);
+			var simpanan = Number(Number(prop)+Number(tabungan)).toFixed(8);
+			document.getElementById("profit").textContent = prop;
+			document.getElementById('saldo_akhir').textContent = balance;
+			if(prop>=0.026){
+				document.getElementById('tabungan').textContent = simpanan;
+				document.getElementById('tabungan').style["font-size"] = "24px";
+				document.getElementById('saldo_awal').textContent = balance;
+				document.getElementById('saldo_akhir').textContent = balance;
+				document.getElementById('double_your_doge_min').click();
+				idmin_bet.textContent=document.getElementById('double_your_doge_stake').value;
+				idmin_bet.style.color="green";
+			}
+			else if(prop<0){
+				document.getElementById("profit").style.color="red";
+				document.getElementById('double_your_doge_2x').click();
+				idmin_bet.textContent=document.getElementById('double_your_doge_stake').value;
+				idmin_bet.style.color="red";
+			}
+			else {
+				document.getElementById("profit").style.color="green";
+				document.getElementById('double_your_doge_min').click();
+				idmin_bet.textContent=document.getElementById('double_your_doge_stake').value;
+				idmin_bet.style.color="green";
+			}
+		}, 1000);
+	}, 3000);
+});
+
+/*Stop Bet*/
+eventAdd(document.getElementById('berhenti'), 'click', function() {
+	clearInterval(betTerus);
+});
+};
+if(document.getElementById("time_remaining").textContent!==""){
+	var ad_id = ['main_content_ad_left','top_user_ads_container','box_ad_middle','bottom_user_ads_container'];
+	for(i = 0; i < ad_id.length; i++) {
+		if(document.getElementById(ad_id[i])){
+			document.getElementById(ad_id[i]).textContent = '';
+		}
+	};
+
+	var class_ad = document.getElementsByClassName('adsbygoogle');
+	for(var c=0; c < class_ad.length; c++){
+		if(class_ad[c]) {
+			class_ad[c].textContent = '';
+		}
+	};
+};
+if (document.getElementById('double_your_doge_right_section')!==null) {createCSS(); runDoge();}
+if (document.getElementById('double_your_btc_right_section')!==null) {createCSS(); runBitco();}
