@@ -1,9 +1,0 @@
-/*
-Belum ada update terbaru
-
-If(update_code===true){
-alert('Ada file terbaru gan!')
-}
-else console.log('Belum ada update terbaru')
-
-*/
